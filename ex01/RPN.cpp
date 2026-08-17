@@ -21,7 +21,7 @@ bool RPN::isValidArg(std::string arg) const
     size_t not_valid = arg.find_first_not_of("0123456789+-*/ ");
     if (not_valid != std::string::npos)
     {
-        std::cout << "Error: invlaid character" << std::endl;
+        std::cerr << "Error: invlaid character" << std::endl;
         return false;
     }
     return true;
@@ -49,7 +49,7 @@ void RPN::calculate(const std::string &expression)
         {
             if (i + 1 < expression.size() && std::isdigit(expression[i + 1]))
             {
-                std::cout << "Error: Value greater than 9" << std::endl;
+                std::cerr << "Error: Value greater than 9" << std::endl;
                 return ;
             }
             _numbers.push(token - '0');
