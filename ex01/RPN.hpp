@@ -9,10 +9,11 @@ class RPN
     private:
         std::stack<int> _numbers;
 
-        bool isValidArg(std::string arg) const;
         int performOp(int first, int second, char op) const;
+        
     public:
         RPN();
+        bool isValidArg(std::string arg) const;
         RPN(const RPN& copy);
         RPN& operator=(const RPN& copy);
         ~RPN();
