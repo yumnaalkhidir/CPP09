@@ -11,4 +11,5 @@ int main(int ac, char **av)
     PmergeMe pmerge;
     if (!pmerge.isValidArg(ac, av))
         return 1;
+    pmerge.make_pairs();
 }

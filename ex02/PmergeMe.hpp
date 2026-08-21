@@ -7,6 +7,7 @@ class PmergeMe
 {
     private:
         std::vector<int> _input;
+        std::vector<int> _vec_algo;
     public:
         PmergeMe();
         PmergeMe(const PmergeMe& copy);
@@ -14,7 +15,8 @@ class PmergeMe
         ~PmergeMe();
 
         bool isValidArg(int ac, char **av);
-    
+        void make_pairs();
+
 };
 
 #endif
