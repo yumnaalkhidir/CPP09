@@ -11,5 +11,11 @@ int main(int ac, char **av)
     PmergeMe pmerge;
     if (!pmerge.isValidArg(ac, av))
         return 1;
+    std::cout << "Vector" << std::endl;
     pmerge.make_pairs();
+    std::cout << std::endl;
+    std::cout << "Deque" << std::endl;
+    pmerge.make_pairs_deque();
+    std::cout << std::endl;
+
 }
