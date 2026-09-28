@@ -1,13 +1,14 @@
 #ifndef RPN_HPP
 #define RPN_HPP
 #include <stack>
+#include <list>
 #include <iostream>
 #include<string>
 #include <cctype>
 class RPN
 {
     private:
-        std::stack<int> _numbers;
+        std::stack<int, std::list<int> > _numbers;
 
         int performOp(int first, int second, char op) const;
         
