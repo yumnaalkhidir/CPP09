@@ -3,41 +3,34 @@
 #include <climits>
 #include <utility>
 #include <algorithm>
+#include <ctime>
+
 
 PmergeMe::PmergeMe()
 {
-
 }
-PmergeMe::PmergeMe(const PmergeMe& copy)
+PmergeMe::PmergeMe(const PmergeMe &copy)
 {
-    (void) copy;
+    (void)copy;
 }
-PmergeMe& PmergeMe::operator=(const PmergeMe& other)
+PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 {
-    (void) other;
+    (void)other;
     return *this;
 }
 PmergeMe::~PmergeMe()
 {
-
 }
-
+const std::vector<int>& PmergeMe::getInput() const
+{
+    return _input;
+}
 bool PmergeMe::isValidArg(int ac, char **av)
 {
     for (int i = 1; i < ac; i++)
     {
         std::string arg = av[i];
-        // if (arg.size() == 1 && arg[0] == '0')
-        // {
-        //     std::cerr << "Error: invlaid character" << std::endl;
-        //     return false;
-        // }
-        // size_t not_valid = arg.find_first_not_of("0123456789+ ");
-        // if (not_valid != std::string::npos)
-        // {
-        //     std::cerr << "Error: invlaid character" << std::endl;
-        //     return false;
-        // }
+
         char *end;
         long value = std::strtol(arg.c_str(), &end, 10);
         if (*end != '\0' || value < 0 || value > INT_MAX)
@@ -47,32 +40,28 @@ bool PmergeMe::isValidArg(int ac, char **av)
         }
         _input.push_back(static_cast<int>(value));
     }
-    std::cout << "Before: ";
-    std::vector<int>::iterator it = _input.begin();
-    for(; it != _input.end(); it++)
-        std::cout << *it << " ";
-    std::cout << std::endl;
     return true;
 }
 
-bool comparePairs(const std::pair<int, int>& a,
-                  const std::pair<int, int>& b)
+bool comparePairs(const std::pair<int, int> &a,
+                  const std::pair<int, int> &b)
 {
     return a.first < b.first;
 }
 
 int Jacobsthal(int n)
 {
-	if (n == 0)
-		return (0);
-	if (n == 1)
-		return (1);
-	return (Jacobsthal(n - 1) + 2 * Jacobsthal(n - 2));
+    if (n == 0)
+        return (0);
+    if (n == 1)
+        return (1);
+    return (Jacobsthal(n - 1) + 2 * Jacobsthal(n - 2));
 }
 
-std::vector<int> PmergeMe::jacobsthalOrder(int pendSize)
+std::vector<int> PmergeMe::jacobsthalOrderVector(int pendSize)
 {
     std::vector<int> order;
+
     if (pendSize <= 0)
         return order;
 
@@ -95,58 +84,55 @@ std::vector<int> PmergeMe::jacobsthalOrder(int pendSize)
     return order;
 }
 
-void PmergeMe::insertPend(std::vector<int>& main_chain, std::vector<std::pair<int, int> >& pend)
+void PmergeMe::insertPendVector(std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend)
 {
-    std::vector<int> order = jacobsthalOrder((int)pend.size());
+    std::vector<int> order = jacobsthalOrderVector((int)pend.size());
 
     for (size_t i = 0; i < order.size(); i++)
     {
         int pendIndex = order[i] - 2;
-        int value  = pend[pendIndex].first;
-        int leader = pend[pendIndex].second; 
+        int value = pend[pendIndex].first;
+        int leader = pend[pendIndex].second;
 
         std::vector<int>::iterator leaderPos =
             std::find(main_chain.begin(), main_chain.end(), leader);
         std::vector<int>::iterator insertPos =
             std::lower_bound(main_chain.begin(), leaderPos, value);
-        
+
         main_chain.insert(insertPos, value);
     }
 }
 
-void PmergeMe::make_pairs()
+void PmergeMe::makePairsVector(std::vector<std::pair<int, int> > &pairs, int &struggler, bool &has_struggler)
 {
-    int struggler = -1;
-    bool has_struggler = false;
-    if (_input.size() % 2 != 0)
+    std::vector<int> input = _input;
+
+    if (input.size() % 2 != 0)
     {
         has_struggler = true;
-        struggler = _input.back();
-        _input.pop_back();
+        struggler = input.back();
+        input.pop_back();
     }
-    std::vector<std::pair<int, int> > pairs;
-    typedef std::vector<int>::iterator it_t;
-    for (it_t it = _input.begin(); it != _input.end(); it += 2)
+    for (std::vector<int>::iterator it = input.begin(); it != input.end(); it += 2)
     {
-        pairs.push_back(std::make_pair(*it, *(it+1)));
+        int first = *it;
+        int second = *(it + 1);
+        if (first < second)
+            std::swap(first, second);
+        pairs.push_back(std::make_pair(first, second));
     }
-    typedef std::vector<std::pair<int, int> >::iterator pair_it;
+}
 
-    for(pair_it it = pairs.begin(); it != pairs.end(); it++)
-    {
-        if (it->first < it->second)
-        {
-            std::swap(it->first, it->second);
-        }
-    }
-    
+void PmergeMe::sortPairsVector(std::vector<std::pair<int, int> > &pairs)
+{
     std::sort(pairs.begin(), pairs.end(), comparePairs);
+}
 
-    std::vector<int> main_chain;
-    std::vector<std::pair<int, int> > pend;
-
+void PmergeMe::buildMainChainVector(const std::vector<std::pair<int, int> > &pairs, std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend)
+{
     main_chain.push_back(pairs.at(0).second);
-    for(unsigned long i = 0; i < pairs.size(); i++)
+
+    for (unsigned long i = 0; i < pairs.size(); i++)
     {
         main_chain.push_back(pairs.at(i).first);
         if (i != 0)
@@ -154,28 +140,54 @@ void PmergeMe::make_pairs()
             pend.push_back(std::make_pair(pairs.at(i).second, pairs.at(i).first));
         }
     }
-
-    insertPend(main_chain, pend);
-
-    if (has_struggler)
-    {
-        std::vector<int>::iterator pos =
-            std::lower_bound(main_chain.begin(), main_chain.end(), struggler);
-        main_chain.insert(pos, struggler);
-    }
-
-    std::cout << "Final sorted: ";
-    for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end(); it++)
-        std::cout << *it << " ";
-    std::cout << std::endl;
 }
 
+void PmergeMe::insertStrugglerVector(std::vector<int> &main_chain, int struggler)
+{
+    std::vector<int>::iterator pos =
+        std::lower_bound(main_chain.begin(), main_chain.end(), struggler);
+    main_chain.insert(pos, struggler);
+}
 
+double PmergeMe::sortVector(std::vector<int> &result)
+{
+    std::vector<std::pair<int, int> > pairs;
+    std::vector<int> main_chain;
+    std::vector<std::pair<int, int> >  pend;
 
-//========================std::deque==================================
-std::deque<int> PmergeMe::jacobsthalOrder_deque(int pendSize)
+    int struggler = -1;
+    bool has_struggler = false;
+
+    std::clock_t start = clock();
+    makePairsVector(pairs, struggler, has_struggler);
+
+    if (pairs.empty())
+    {
+        if (has_struggler)
+            main_chain.push_back(struggler);
+    }
+    else
+    {
+        sortPairsVector(pairs);
+        buildMainChainVector(pairs, main_chain, pend);
+        insertPendVector(main_chain, pend);
+
+        if (has_struggler)
+            insertStrugglerVector(main_chain, struggler);
+    }
+
+    std::clock_t end = clock();
+    double duration = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
+    result = main_chain;
+    return duration; 
+}
+
+//===============================Deque========================
+
+std::deque<int> PmergeMe::jacobsthalOrderDeque(int pendSize)
 {
     std::deque<int> order;
+
     if (pendSize <= 0)
         return order;
 
@@ -198,60 +210,55 @@ std::deque<int> PmergeMe::jacobsthalOrder_deque(int pendSize)
     return order;
 }
 
-void PmergeMe::insertPend_deque(std::deque<int>& main_chain, std::deque<std::pair<int, int> >& pend)
+void PmergeMe::insertPendDeque(std::deque<int> &main_chain, std::deque<std::pair<int, int> > &pend)
 {
-    std::deque<int> order = jacobsthalOrder_deque((int)pend.size());
+    std::deque<int> order = jacobsthalOrderDeque((int)pend.size());
 
     for (size_t i = 0; i < order.size(); i++)
     {
         int pendIndex = order[i] - 2;
-        int value  = pend[pendIndex].first;
-        int leader = pend[pendIndex].second; 
+        int value = pend[pendIndex].first;
+        int leader = pend[pendIndex].second;
 
         std::deque<int>::iterator leaderPos =
             std::find(main_chain.begin(), main_chain.end(), leader);
         std::deque<int>::iterator insertPos =
             std::lower_bound(main_chain.begin(), leaderPos, value);
-        
+
         main_chain.insert(insertPos, value);
     }
 }
 
-void PmergeMe::make_pairs_deque()
+void PmergeMe::makePairsDeque(std::deque<std::pair<int, int> > &pairs, int &struggler, bool &has_struggler)
 {
-    _deque_in.assign(_input.begin(), _input.end() + 1);
+    std::deque<int> input(_input.begin(), _input.end());
 
-    int struggler = -1;
-    bool has_struggler = false;
-    if (_deque_in.size() % 2 != 0)
+    if (input.size() % 2 != 0)
     {
         has_struggler = true;
-        struggler = _deque_in.back();
-        _deque_in.pop_back();
+        struggler = input.back();
+        input.pop_back();
     }
-    std::deque<std::pair<int, int> > pairs;
-    typedef std::deque<int>::iterator it_t;
-    for (it_t it = _deque_in.begin(); it != _deque_in.end(); it += 2)
+    for (std::deque<int>::iterator it = input.begin(); it != input.end(); it += 2)
     {
-        pairs.push_back(std::make_pair(*it, *(it+1)));
+        int first = *it;
+        int second = *(it + 1);
+        if (first < second)
+            std::swap(first, second);
+        pairs.push_back(std::make_pair(first, second));
     }
-    typedef std::deque<std::pair<int, int> >::iterator pair_it;
+}
 
-    for(pair_it it = pairs.begin(); it != pairs.end(); it++)
-    {
-        if (it->first < it->second)
-        {
-            std::swap(it->first, it->second);
-        }
-    }
-    
+void PmergeMe::sortPairsDeque(std::deque<std::pair<int, int> > &pairs)
+{
     std::sort(pairs.begin(), pairs.end(), comparePairs);
+}
 
-    std::deque<int> main_chain;
-    std::deque<std::pair<int, int> > pend;
-
+void PmergeMe::buildMainChainDeque(const std::deque<std::pair<int, int> > &pairs, std::deque<int> &main_chain, std::deque<std::pair<int, int> > &pend)
+{
     main_chain.push_back(pairs.at(0).second);
-    for(unsigned long i = 0; i < pairs.size(); i++)
+
+    for (unsigned long i = 0; i < pairs.size(); i++)
     {
         main_chain.push_back(pairs.at(i).first);
         if (i != 0)
@@ -259,18 +266,44 @@ void PmergeMe::make_pairs_deque()
             pend.push_back(std::make_pair(pairs.at(i).second, pairs.at(i).first));
         }
     }
+}
 
-    insertPend_deque(main_chain, pend);
+void PmergeMe::insertStrugglerDeque(std::deque<int> &main_chain, int struggler)
+{
+    std::deque<int>::iterator pos =
+        std::lower_bound(main_chain.begin(), main_chain.end(), struggler);
+    main_chain.insert(pos, struggler);
+}
 
-    if (has_struggler)
+double PmergeMe::sortDeque(std::deque<int> &result)
+{
+    std::deque<std::pair<int, int> > pairs;
+    std::deque<int> main_chain;
+    std::deque<std::pair<int, int> > pend;
+
+    int struggler = -1;
+    bool has_struggler = false;
+
+    std::clock_t start = clock();
+    makePairsDeque(pairs, struggler, has_struggler);
+
+    if (pairs.empty())
     {
-        std::deque<int>::iterator pos =
-            std::lower_bound(main_chain.begin(), main_chain.end(), struggler);
-        main_chain.insert(pos, struggler);
+        if (has_struggler)
+            main_chain.push_back(struggler);
+    }
+    else
+    {
+        sortPairsDeque(pairs);
+        buildMainChainDeque(pairs, main_chain, pend);
+        insertPendDeque(main_chain, pend);
+
+        if (has_struggler)
+            insertStrugglerDeque(main_chain, struggler);
     }
 
-    std::cout << "Final sorted: ";
-    for (std::deque<int>::iterator it = main_chain.begin(); it != main_chain.end(); it++)
-        std::cout << *it << " ";
-    std::cout << std::endl;
+    std::clock_t end = clock();
+    double duration = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
+    result = main_chain;
+    return duration; 
 }
