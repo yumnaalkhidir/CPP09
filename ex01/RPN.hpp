@@ -2,9 +2,8 @@
 #define RPN_HPP
 #include <stack>
 #include <list>
-#include <iostream>
 #include<string>
-#include <cctype>
+
 class RPN
 {
     private:
@@ -14,11 +13,11 @@ class RPN
         
     public:
         RPN();
-        bool isValidArg(std::string arg) const;
         RPN(const RPN& copy);
         RPN& operator=(const RPN& copy);
         ~RPN();
-
+        
+        bool isValidArg(std::string arg) const;
         void calculate(const std::string &expression);
 };
 

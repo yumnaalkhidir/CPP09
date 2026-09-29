@@ -66,21 +66,31 @@ std::vector<int> PmergeMe::jacobsthalOrderVector(int pendSize)
         return order;
 
     int prev = 1;
-    int k = 3;
+    int j_n = 3;
 
     while ((int)order.size() < pendSize)
     {
-        int curr = Jacobsthal(k);
+        int curr = Jacobsthal(j_n);
         int upper = std::min(curr, pendSize + 1);
         int lower = prev + 1;
+
+        std::cout << "curr: " << curr << std::endl;
+        std::cout << "upper: " << upper << std::endl;
+        std::cout << "lower: " << lower << std::endl;
 
         for (int idx = upper; idx >= lower; idx--)
         {
             order.push_back(idx);
         }
         prev = curr;
-        k++;
+        j_n++;
     }
+    std::cout << "Order" << std::endl;
+    for(std::vector<int>::iterator it = order.begin(); it != order.end(); it++)
+    {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
     return order;
 }
 
@@ -121,11 +131,25 @@ void PmergeMe::makePairsVector(std::vector<std::pair<int, int> > &pairs, int &st
             std::swap(first, second);
         pairs.push_back(std::make_pair(first, second));
     }
+    std::cout << "Making the pairs:" << std::endl;
+    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+    for(; it != pairs.end(); it++)
+    {
+        std::cout << "( " << it->first << ", " << it->second << ")" << std::endl;
+    }
+    std::cout<<std::endl;
 }
 
 void PmergeMe::sortPairsVector(std::vector<std::pair<int, int> > &pairs)
 {
     std::sort(pairs.begin(), pairs.end(), comparePairs);
+    std::cout << "Sorting the pairs" << std::endl;
+    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+    for(; it != pairs.end(); it++)
+    {
+        std::cout << "( " << it->first << ", " << it->second << ")" << std::endl;
+    }
+    std::cout<<std::endl;
 }
 
 void PmergeMe::buildMainChainVector(const std::vector<std::pair<int, int> > &pairs, std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend)
@@ -140,6 +164,20 @@ void PmergeMe::buildMainChainVector(const std::vector<std::pair<int, int> > &pai
             pend.push_back(std::make_pair(pairs.at(i).second, pairs.at(i).first));
         }
     }
+    std::cout << "Main Chain:" << std::endl;
+    for(std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end(); it++)
+    {
+        std::cout << *it << " ";
+    }
+    std::cout<<std::endl;
+    std::cout << "Pend:" << std::endl;
+    std::cout << "L  V" <<std::endl;
+    for(std::vector<std::pair<int, int> >::iterator it = pend.begin(); it != pend.end(); it++)
+    {
+        std::cout << it->first << "  " << it->second << std::endl;
+    }
+    // std::cout<<std::endl;
+    
 }
 
 void PmergeMe::insertStrugglerVector(std::vector<int> &main_chain, int struggler)

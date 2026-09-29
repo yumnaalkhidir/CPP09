@@ -1,4 +1,6 @@
 #include "RPN.hpp"
+#include <iostream>
+#include <cctype>
 
 RPN::RPN()
 {}
@@ -21,11 +23,12 @@ bool RPN::isValidArg(std::string arg) const
     size_t not_valid = arg.find_first_not_of("0123456789+-*/ ");
     if (not_valid != std::string::npos)
     {
-        std::cerr << "Error: invlaid character" << std::endl;
+        std::cerr << "Error: invalid character" << std::endl;
         return false;
     }
     return true;
 }
+
 int RPN::performOp(int first, int second, char op) const
 {
     if (op == '+')
@@ -37,6 +40,7 @@ int RPN::performOp(int first, int second, char op) const
     else
         return first / second;
 }
+
 void RPN::calculate(const std::string &expression)
 {
     for (size_t i = 0; i < expression.size(); i++)

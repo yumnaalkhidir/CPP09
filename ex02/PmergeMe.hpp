@@ -7,7 +7,6 @@ class PmergeMe
 {
 private:
     std::vector<int> _input;
-    std::deque<int> _deque_in;
 
     std::vector<int> jacobsthalOrderVector(int pendSize);
     void insertPendVector(std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend);
