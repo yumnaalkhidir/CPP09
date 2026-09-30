@@ -13,14 +13,12 @@ private:
     void insertPendVector(std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend);
     void insertStrugglerVector(std::vector<int> &main_chain, int struggler);
     void makePairsVector(const std::vector<int> &input, std::vector<std::pair<int, int> > &pairs, int &struggler, bool &has_struggler);
-    void buildMainChainVector(const std::vector<std::pair<int, int> > &pairs, std::vector<int> &main_chain, std::vector<std::pair<int, int> > &pend);
     void mergeInsertSortVector(std::vector<int> &arr);
 
     std::deque<int> jacobsthalOrderDeque(int pendSize);
     void insertPendDeque(std::deque<int> &main_chain, std::deque<std::pair<int, int> > &pend);
     void insertStrugglerDeque(std::deque<int> &main_chain, int struggler);
     void makePairsDeque(const std::deque<int> &input, std::deque<std::pair<int, int> > &pairs, int &struggler, bool &has_struggler);
-    void buildMainChainDeque(const std::deque<std::pair<int, int> > &pairs, std::deque<int> &main_chain, std::deque<std::pair<int, int> > &pend);
     void mergeInsertSortDeque(std::deque<int> &arr);
 
 public:
