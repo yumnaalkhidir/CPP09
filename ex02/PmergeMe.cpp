@@ -57,6 +57,8 @@ int PmergeMe::Jacobsthal(int n)
     return (Jacobsthal(n - 1) + 2 * Jacobsthal(n - 2));
 }
 
+//===========================VECTOR===============================
+
 std::vector<int> PmergeMe::jacobsthalOrderVector(int pendSize)
 {
     std::vector<int> order;

@@ -24,9 +24,7 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other)
 BitcoinExchange::~BitcoinExchange()
 {
 }
-//the above canonical for funtions are simple and basicaly empty cause i dont have anythign to assign 
 
-//this function trims whit spaces from the beginging and end of a string
 std::string BitcoinExchange::trim(const std::string &str) const
 {
     std::string::size_type start = 0;
@@ -40,14 +38,12 @@ std::string BitcoinExchange::trim(const std::string &str) const
     return str.substr(start, end - start);
 }
 
-//checks for a leap year if the year is divisibly by 4 and not by 100 then
-//its a leap year also if its a century year if its divisibly by 400 its a leap year
 bool BitcoinExchange::isLeapYear(int year) const
 {
     return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
 }
 
-//return the days in a month
+
 int BitcoinExchange::daysInMonth(int year, int month) const
 {
     if (month == 2)
@@ -60,7 +56,7 @@ int BitcoinExchange::daysInMonth(int year, int month) const
         return 30;
     return 31;
 }
-//this functions checks if the date is in the correct format year-month-day or 0000-00-00
+
 bool BitcoinExchange::validateDateFormat(const std::string &date) const
 {
     if (date.size() != 10)
@@ -86,7 +82,7 @@ bool BitcoinExchange::validateDateFormat(const std::string &date) const
 
     return true;
 }
-// this function checks if my value is positive and not greater that 1000
+
 bool BitcoinExchange::validateValue(double value) const
 {
     if (value < 0)
@@ -101,7 +97,7 @@ bool BitcoinExchange::validateValue(double value) const
     }
     return true;
 }
-//loads the database into a map container key = date value= exchange rate it uses getline to fetch each line
+
 void BitcoinExchange::loadDataBase(const std::string &filename)
 {
     std::ifstream db(filename.c_str());
@@ -120,15 +116,9 @@ void BitcoinExchange::loadDataBase(const std::string &filename)
         double exchange_rate = std::strtod(line.substr(sep + 1).c_str(), &end);
         _database.insert(std::make_pair(date, exchange_rate));
     }
-    // std::map<std::string, double>::const_iterator cit;
-    // for(cit = _database.begin(); cit != _database.end(); cit++)
-    //     std::cout << "Key: " << cit->first << " Value: " << cit->second << std::endl;
     db.close();
 }
-//finds the rate of a specific date and returns an iterator using the lowerbound function but 
-//if the echangerate is not pointing the the end and it is pointing to the same date then return the result
-//if the iteratir fiund is pointing to the begining it means no match have been found or its the earlier than the first date in the database
-//else decreese the iterator and returnit
+
 BitcoinExchange::c_it BitcoinExchange::findExchangeRateEntry(const std::string &date) const
 {
     c_it exchangeRateIt = _database.lower_bound(date);
@@ -142,11 +132,7 @@ BitcoinExchange::c_it BitcoinExchange::findExchangeRateEntry(const std::string &
     --exchangeRateIt;
     return exchangeRateIt;
 }
-//this is the core funtion that joins everything together
-//first it check if the file passed opens safely
-//then goes through line by line speerates the lines by | and trims the substring
-//checks for valid dat and value then extracts the date and print the mulitplied result 
-//appropriet eeror messages are being written 
+
 void BitcoinExchange::processInputFile(const std::string &filename)
 {
     std::ifstream input(filename.c_str());
