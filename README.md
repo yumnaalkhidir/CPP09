@@ -17,6 +17,7 @@ cd exXX
 make
 ./<binary_name>
 ```
+`ex00` needs `data.csv` (exchange-rate database, included) in its working directory, e.g. `cd ex00 && make && ./btc input.txt`.
 
 ---
 Part of the 42 School curriculum.
